@@ -15,6 +15,7 @@ public class UserServiceImpl  implements  UserService{
 
     @Autowired
     UserRepository userRepository;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -22,7 +23,7 @@ public class UserServiceImpl  implements  UserService{
     public  User saveUser(User user) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
+       return userRepository.save(user);
     }
     @Override
     public Optional<User> findByUserName(String userName) {
