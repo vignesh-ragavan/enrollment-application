@@ -16,13 +16,10 @@ public class UserServiceImpl  implements  UserService{
     @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+
 
     @Override
     public  User saveUser(User user) {
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
        return userRepository.save(user);
     }
     @Override

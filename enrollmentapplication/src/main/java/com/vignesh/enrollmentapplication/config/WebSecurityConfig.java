@@ -23,14 +23,11 @@ public class WebSecurityConfig  extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userDetailsService);
     }
 
 
@@ -40,7 +37,7 @@ public class WebSecurityConfig  extends WebSecurityConfigurerAdapter {
                 .antMatchers("/resources", "/error", "/service/**").permitAll()
                 .anyRequest().fullyAuthenticated()
                 .and().logout().permitAll()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/service/logout", "post"))
+                .logoutRequestMatcher(new AntPathRequestMatcher("/service/logout", "POST"))
                 .and().formLogin().loginPage("/service/login").and()
                 .httpBasic().and().csrf().disable();
 
