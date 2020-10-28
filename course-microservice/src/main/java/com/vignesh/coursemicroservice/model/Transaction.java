@@ -22,8 +22,8 @@ public class Transaction {
     @ManyToOne(fetch = FetchType.EAGER)
     private  Course course;
 
-    @Column(name  ="user_id")
-    private  Long user_id;
+    @Column(name  ="userId")
+    private  Long userId;
 
     @Column(name  ="date_of_issue")
     private LocalDateTime dateOfIssue;
