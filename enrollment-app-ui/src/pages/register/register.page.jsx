@@ -1,9 +1,9 @@
 import React from 'react';
 import UserService from '../../services/user.service';
 import {User} from '../../models/user';
-import './login.page.css';
+import './register.page.css';
 
-export default class LoginPage extends React.Component{
+export default class RegisterPage extends React.Component {
 
   constructor(props) {
     super(props);
@@ -13,7 +13,7 @@ export default class LoginPage extends React.Component{
     }
 
     this.state = {
-      user: new User('',''),
+      user: new User('','',''),
       submitted: false,
       loading: false,
       errorMessage: ''
@@ -21,30 +21,36 @@ export default class LoginPage extends React.Component{
   }
 
   handleChange(e) {
-    var {name, value} = e.target;
+    var { name, value } = e.target;
     var user = this.state.user;
     user[name] = value;
     this.setState({user: user});
   }
 
-  handleLogin(e) {
+  handleRegister(e) {
     e.preventDefault();
-
     this.setState({submitted: true});
-    const {user} = this.state;
+    const{user} = this.state;
 
-    if(!(user.username && user.password)){
+    if(!(user.username && user.password && user.name)) {
       return;
     }
 
     this.setState({loading: true});
-    UserService.login(user).then(data => {
-      this.props.history.push("/home");
+    UserService.register(user).then(data => {
+      this.props.history.push("/login");
     }, error => {
-      this.setState({
-        errorMessage: "Username or password is not valid",
-        loading: false
-      });
+      if(error.response.status === 409) {
+        this.setState({
+          errorMessage: "Username is not available",
+          loading: false
+        });
+      }else {
+        this.setState({
+          errorMessage: "Unexpected error occurred.",
+          loading: false
+        });
+      }
     });
   }
 
@@ -59,7 +65,14 @@ export default class LoginPage extends React.Component{
               <strong>Error! </strong> {errorMessage}
             </div>
           }
-          <form name="form" onSubmit={(e) => this.handleLogin(e)}>
+          <form name="form" onSubmit={(e) => this.handleRegister(e)}>
+            <div className={'form-group' + (submitted && !user.name ? 'has-error':'')}>
+              <label htmlFor="name">Full Name</label>
+              <input type="text" className="form-control" name="name" value={user.name} onChange={(e)=>this.handleChange(e)}/>
+              {submitted && !user.name &&
+                <div className="help-block">Full name is required</div>
+              }
+            </div>
             <div className={'form-group' + (submitted && !user.username ? 'has-error':'')}>
               <label htmlFor="username">Username</label>
               <input type="text" className="form-control" name="username" value={user.username} onChange={(e)=>this.handleChange(e)}/>
@@ -75,7 +88,7 @@ export default class LoginPage extends React.Component{
               }
             </div>
             <div className="form-group">
-              <button className="btn btn-lg btn-primary btn-block btn-signin form-submit-button" disabled={loading}>Login</button>
+              <button className="btn btn-lg btn-primary btn-block btn-signin form-submit-button" disabled={loading}>Sign Up</button>
             </div>
           </form>
         </div>
